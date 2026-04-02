@@ -2,96 +2,73 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>SÁDICO V-FX: REMOTE LIVE ENGINE</title>
+    <title>SÁDICO V-FX: MODO LIVE FINAL</title>
     <style>
         body { background: #000; margin: 0; overflow: hidden; display: flex; justify-content: center; align-items: center; height: 100vh; font-family: 'Courier New', monospace; color: #0f0; }
         
-        /* EL ESCENARIO SÁDICO (LA PEROLITA) */
         .stage { 
             position: relative; 
-            width: 90vw; 
-            height: 90vh; 
+            width: 100vw; 
+            height: 100vh; 
             display: flex; 
             justify-content: center; 
             align-items: center; 
-            border: 2px solid #0f0;
-            box-shadow: 0 0 40px #0f0;
-            background: #000;
         }
 
-        /* EL FEED DEL ARCAICO (SIN BOTONES NI MARCOS) */
+        /* EL FEED DEL ARCAICO (SINCRONIZADO CON 8uATVan) */
         #remote-stream {
-            width: 100%; 
-            height: 100%;
+            width: 100%; height: 100%;
             z-index: 10;
-            filter: contrast(1.3) brightness(1.1) saturate(1.2);
-            pointer-events: none; /* Ignora clics para no pausar el video */
+            filter: contrast(1.2) brightness(1.1);
+            pointer-events: none;
+            border: none;
         }
 
-        /* EL AURA MÍSTICA (ASSET A: aura.webp) */
+        /* EL AURA CROMÁTICA (aura.webp) */
         .aura {
-            position: absolute;
-            width: 140%;
-            height: 140%;
-            mix-blend-mode: screen;
-            pointer-events: none;
+            position: absolute; width: 150%; height: 150%;
+            mix-blend-mode: screen; pointer-events: none;
             transform-origin: center;
         }
 
-        /* Aura trasera: El Portal */
-        .atras { 
-            z-index: 5; 
-            opacity: 0.9;
-            animation: portal-atras 5s infinite alternate ease-in-out;
-        }
+        .atras { z-index: 5; opacity: 0.8; animation: portal 6s infinite alternate ease-in-out; }
+        .adelante { z-index: 15; opacity: 0.4; mix-blend-mode: color-dodge; animation: flujo 3s infinite alternate-reverse; }
 
-        /* Aura delantera: El Ultra Instinto */
-        .adelante { 
-            z-index: 15; 
-            opacity: 0.5;
-            mix-blend-mode: color-dodge;
-            animation: flujo-adelante 3s infinite alternate-reverse ease-in-out;
-        }
-
-        @keyframes portal-atras {
+        @keyframes portal {
             0% { transform: scale(1) rotate(0deg); filter: hue-rotate(0deg) blur(5px); }
-            100% { transform: scale(1.2) rotate(10deg); filter: hue-rotate(180deg) blur(15px); }
+            100% { transform: scale(1.2) rotate(15deg); filter: hue-rotate(180deg) blur(20px); }
         }
 
-        @keyframes flujo-adelante {
-            from { transform: translateY(30px) scale(1.1); filter: brightness(1); }
-            to { transform: translateY(-30px) scale(1.3); filter: brightness(1.8); }
+        @keyframes flujo {
+            from { transform: translateY(40px) scale(1.1); }
+            to { transform: translateY(-40px) scale(1.3); }
         }
 
-        #ui-stats { position: absolute; top: 15px; left: 15px; z-index: 100; text-shadow: 0 0 10px #000; pointer-events: none; }
+        #ui-overlay { position: absolute; top: 20px; left: 20px; z-index: 100; text-shadow: 0 0 10px #000; }
     </style>
 </head>
 <body>
 
-    <div id="ui-stats">
-        <h2 style="margin:0;">SÁDICO V-FX: MODO LIVE</h2>
-        <p>INPUT: REDMI A9 (ID: 8uATVan) | ENGINE: LA PEROLITA i5</p>
-        <p style="color: #fff; font-size: 11px;">STATUS: <span style="color:#0f0; animation: blink 1s infinite;">● RECEPCIÓN ACTIVA</span></p>
+    <div id="ui-overlay">
+        <h2 style="margin:0;">SÁDICO V-FX: LIVE ENGINE</h2>
+        <p>INPUT: REDMI A9 (ID: 8uATVan) | RENDER: i5</p>
+        <p style="color: #fff; font-size: 10px;">STATUS: <span style="color:#0f0;">SINCRO ACTIVA</span></p>
     </div>
 
     <div class="stage">
-        <!-- CAPA 1: Aura Profunda -->
+        <!-- CAPA 1: Aura trasera -->
         <img src="aura.webp" class="aura atras">
         
-        <!-- CAPA 2: Tu cara desde el Arcaico (SIN BOTONES) -->
+        <!-- CAPA 2: EL VIDEO DEL ARCAICO (LINK BLINDADO) -->
         <iframe id="remote-stream" 
                 src="https://vdo.ninja" 
-                allow="autoplay;camera;microphone" 
+                allow="autoplay;camera;microphone;fullscreen" 
                 frameborder="0">
         </iframe>
 
-        <!-- CAPA 3: Aura de Impacto -->
+        <!-- CAPA 3: Aura delantera -->
         <img src="aura.webp" class="aura adelante">
     </div>
-
-    <style>
-        @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
-    </style>
 
 </body>
 </html>
