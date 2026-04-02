@@ -5,17 +5,9 @@
     <title>SÁDICO V-FX: MODO LIVE FINAL</title>
     <style>
         body { background: #000; margin: 0; overflow: hidden; display: flex; justify-content: center; align-items: center; height: 100vh; font-family: 'Courier New', monospace; color: #0f0; }
+        .stage { position: relative; width: 100vw; height: 100vh; display: flex; justify-content: center; align-items: center; }
         
-        .stage { 
-            position: relative; 
-            width: 100vw; 
-            height: 100vh; 
-            display: flex; 
-            justify-content: center; 
-            align-items: center; 
-        }
-
-        /* EL FEED DEL ARCAICO (SINCRONIZADO CON 8uATVan) */
+        /* EL FEED DEL ARCAICO (RECEPTOR) */
         #remote-stream {
             width: 100%; height: 100%;
             z-index: 10;
@@ -24,13 +16,7 @@
             border: none;
         }
 
-        /* EL AURA CROMÁTICA (aura.webp) */
-        .aura {
-            position: absolute; width: 150%; height: 150%;
-            mix-blend-mode: screen; pointer-events: none;
-            transform-origin: center;
-        }
-
+        .aura { position: absolute; width: 150%; height: 150%; mix-blend-mode: screen; pointer-events: none; transform-origin: center; }
         .atras { z-index: 5; opacity: 0.8; animation: portal 6s infinite alternate ease-in-out; }
         .adelante { z-index: 15; opacity: 0.4; mix-blend-mode: color-dodge; animation: flujo 3s infinite alternate-reverse; }
 
@@ -39,11 +25,7 @@
             100% { transform: scale(1.2) rotate(15deg); filter: hue-rotate(180deg) blur(20px); }
         }
 
-        @keyframes flujo {
-            from { transform: translateY(40px) scale(1.1); }
-            to { transform: translateY(-40px) scale(1.3); }
-        }
-
+        @keyframes flujo { from { transform: translateY(40px) scale(1.1); } to { transform: translateY(-40px) scale(1.3); } }
         #ui-overlay { position: absolute; top: 20px; left: 20px; z-index: 100; text-shadow: 0 0 10px #000; }
     </style>
 </head>
@@ -56,17 +38,15 @@
     </div>
 
     <div class="stage">
-        <!-- CAPA 1: Aura trasera -->
         <img src="aura.webp" class="aura atras">
         
-        <!-- CAPA 2: EL VIDEO DEL ARCAICO (LINK BLINDADO) -->
+        <!-- LINK RE-DIRECCIONADO (MODO RECEPTOR PURO) -->
         <iframe id="remote-stream" 
                 src="https://vdo.ninja" 
                 allow="autoplay;camera;microphone;fullscreen" 
                 frameborder="0">
         </iframe>
 
-        <!-- CAPA 3: Aura delantera -->
         <img src="aura.webp" class="aura adelante">
     </div>
 
