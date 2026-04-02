@@ -2,99 +2,103 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>SÁDICO V-FX: SARA CLOUD</title>
+    <title>SÁDICO V-FX: SARA FULL RENDER</title>
     <style>
         body { margin: 0; background: #000; overflow: hidden; font-family: 'Courier New', monospace; color: #0f0; }
+        
+        /* EL CONTORNO NEÓN (EFECTO CROMÁTICO ORIGINAL) */
+        canvas { 
+            filter: drop-shadow(0 0 15px #0f0) drop-shadow(0 0 35px #0ff);
+            animation: latido-neon 4s infinite linear;
+        }
+
+        @keyframes latido-neon {
+            0% { filter: drop-shadow(0 0 15px #0f0) drop-shadow(0 0 40px #0f0) hue-rotate(0deg); }
+            50% { filter: drop-shadow(0 0 25px #0ff) drop-shadow(0 0 60px #0ff) hue-rotate(180deg); }
+            100% { filter: drop-shadow(0 0 15px #0f0) drop-shadow(0 0 40px #0f0) hue-rotate(360deg); }
+        }
+
         #ui { position: absolute; top: 20px; left: 20px; z-index: 100; text-shadow: 0 0 10px #0f0; pointer-events: none; }
+        
+        /* CAPAS DE AMBIENTE 2.5D */
+        .overlay {
+            position: absolute; width: 100%; height: 100%;
+            background: radial-gradient(circle, transparent 20%, black 90%);
+            pointer-events: none; z-index: 50;
+        }
     </style>
 </head>
 <body>
 
     <div id="ui">
         <h2 style="margin:0;">SÁDICO V-FX: PROYECTO SARA</h2>
-        <div id="status">ESTADO: SINCRONIZANDO CON GITHUB...</div>
+        <div id="status">ESTADO: INYECTANDO CROMATISMO...</div>
     </div>
+    
+    <div class="overlay"></div>
 
-    <!-- CARGA DE LIBRERÍAS (CDNs DE ALTA VELOCIDAD) -->
     <script src="https://cloudflare.com"></script>
     <script src="https://jsdelivr.net"></script>
 
     <script>
         const scene = new THREE.Scene();
-        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 1000);
         const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+        
         renderer.setSize(window.innerWidth, window.innerHeight);
         renderer.setPixelRatio(window.devicePixelRatio);
         document.body.appendChild(renderer.domElement);
 
-        // --- ILUMINACIÓN CROMÁTICA ---
-        scene.add(new THREE.AmbientLight(0xffffff, 1.5));
-        const hemiLight = new THREE.HemisphereLight(0xffffff, 0x444444, 1);
-        scene.add(hemiLight);
-        const spotLight = new THREE.SpotLight(0x00ffff, 2);
-        spotLight.position.set(5, 10, 5);
-        scene.add(spotLight);
+        // ILUMINACIÓN AGRESIVA
+        scene.add(new THREE.AmbientLight(0xffffff, 2));
+        const pointLight = new THREE.PointLight(0x00ff00, 5, 20);
+        pointLight.position.set(5, 5, 5);
+        scene.add(pointLight);
 
-        // --- CARGA DE SARA ---
         const loader = new THREE.GLTFLoader();
         let sara;
 
         loader.load('./sara_model.glb', (gltf) => {
             sara = gltf.scene;
             
-            // Auto-Ajuste de Escala y Posición
+            // ESCALADO PARA QUE OCUPE LA PANTALLA
             const box = new THREE.Box3().setFromObject(sara);
             const size = box.getSize(new THREE.Vector3());
-            const scale = 5 / size.y; // Forzamos a que mida 5 unidades
+            const scale = 6 / size.y; 
             sara.scale.set(scale, scale, scale);
-            sara.position.y = -box.min.y * scale - 2.5; // Pies al suelo
+            sara.position.y = -2.5; 
 
             scene.add(sara);
-            document.getElementById('status').innerHTML = "ESTADO: <span style='color:white'>SARA ONLINE (GITHUB)</span>";
+            document.getElementById('status').innerHTML = "ESTADO: <span style='color:white'>SARA ONLINE (ULTRA)</span>";
 
-            // --- FLAMAS DE PODER (AURA.WEBP) ---
-            const flamaTex = new THREE.TextureLoader().load('./aura.webp');
+            // FLAMAS MÍSTICAS (Aura.webp)
+            const tex = new THREE.TextureLoader().load('./aura.webp');
             const flamas = [];
-            for(let i=0; i<5; i++){
-                const mat = new THREE.SpriteMaterial({ 
-                    map: flamaTex, 
-                    blending: THREE.AdditiveBlending, 
-                    color: 0x00ff00,
-                    opacity: 0.7
-                });
-                const s = new THREE.Sprite(mat);
-                s.scale.set(4, 9, 1);
+            for(let i=0; i<6; i++){
+                const s = new THREE.Sprite(new THREE.SpriteMaterial({map:tex, blending:2, color:0x00ff00, opacity: 0.6}));
+                s.scale.set(5, 10, 1);
                 scene.add(s);
                 flamas.push(s);
             }
 
-            // --- BUCLE DE ANIMACIÓN ---
             function animate() {
                 requestAnimationFrame(animate);
                 const t = Date.now() * 0.002;
-
-                if(sara) sara.rotation.y += 0.008; // Giro suave
+                if(sara) sara.rotation.y += 0.008;
 
                 flamas.forEach((f, i) => {
-                    const angle = t + (i * Math.PI / 2.5);
-                    f.position.set(Math.cos(angle) * 2.5, 1.5 + Math.sin(t) * 0.4, Math.sin(angle) * 2.5);
-                    f.material.color.setHSL((t * 0.1) % 1, 1, 0.5); // Ciclo neón infinito
+                    const a = t + (i * Math.PI / 3);
+                    // Movimiento vertical sincronizado con el "Gas"
+                    f.position.set(Math.cos(a)*3, Math.sin(t)*0.5, Math.sin(a)*3);
+                    f.material.color.setHSL((t * 0.1) % 1, 1, 0.5);
                 });
 
                 renderer.render(scene, camera);
             }
             animate();
-        }, 
-        (xhr) => {
-            let p = Math.round(xhr.loaded / xhr.total * 100);
-            document.getElementById('status').innerText = "DESCARGANDO ACTIVO: " + p + "%";
-        },
-        (err) => {
-            document.getElementById('status').innerHTML = "<span style='color:red'>ERROR: REVISA LOS NOMBRES EN GITHUB</span>";
-            console.error(err);
         });
 
-        camera.position.set(0, 2, 9);
+        camera.position.set(0, 2, 10);
     </script>
 </body>
 </html>
